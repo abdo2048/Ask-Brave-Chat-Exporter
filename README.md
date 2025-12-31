@@ -1,40 +1,50 @@
-# Ask Brave Chat Exporter
+<h1 align="center">
+  <br>
+  <img width="430" height="215" alt="Ask Brave Chat Exporter main page" src="https://github.com/user-attachments/assets/e097cac0-8ac3-4c69-a400-dfc0c8f94bec" />
+  <br>
+  Ask Brave Chat Exporter
+  <br>
+</h1>
 
-<img width="430" height="215" alt="Ask Brave Chat Exporter main page" src="https://github.com/user-attachments/assets/e097cac0-8ac3-4c69-a400-dfc0c8f94bec" />
+<h4 align="center">A browser userscript that exports Ask Brave AI conversations to Markdown and HTML formats with professional styling and enhanced features.</h4>
+<p align="center">
+    
+  </a>
+</p>
 
-## Demo
+&nbsp;
+
 https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 
 ## Features
-Ask Brave Chat Exporter is A browser userscript that exports Ask Brave AI conversations to Markdown and HTML formats with professional styling and enhanced features.
 
 ### Core Functionality
 - **Dual Format Export**: Export conversations to both Markdown (.md) and HTML (.html) formats.
-- **Custom Titles**: Name your conversation title before export.
+- **Custom Titles**: Edit your conversation title before export.
 - **Smart Formatting**: Preserves questions, answers, code blocks, and formatting.
 
 ### Markdown Export
 - Emoji dividers for visual question separation (`◤━━━━━━ Q# ━━━━━◥`)
-- Horizontal rules between Q&A pairs
-- Metadata header with title and export date
+- Horizontal rules between Q&A pairs.
+- Metadata header with title and export date.
 
 ### HTML Export
 - **Professional Theme System**
-  - WCAG AA+ accessibility compliant
-  - Automatic dark mode support (respects system preference)
-  - Fluid responsive typography
-  - Modern color palette (Slate + Indigo)
+  - WCAG AA+ accessibility compliant.
+  - Automatic dark mode support (respects system preference).
+  - Fluid responsive typography.
+  - Modern color palette (Slate + Indigo).
 
 - **Interactive Features**
-  - Sticky sidebar table of contents with active section highlighting
-  - Mobile-responsive hamburger menu
-  - Copy buttons for all code blocks, tables and questions
-  - Smooth scroll navigation
+  - Sticky sidebar table of contents with active section highlighting.
+  - Mobile-responsive hamburger menu.
+  - Copy buttons for all code blocks, tables and questions.
+  - Smooth scroll navigation.
 
 - **Typography**
-  - Inter font for body text and UI
-  - JetBrains Mono for code blocks
-  - Optimized font sizes and spacing
+  - Inter font for body text and UI.
+  - JetBrains Mono for code blocks.
+  - Optimized font sizes and spacing.
 
 ### How does it work?
 - The script clicks copy answer buttons in chat for user prompts and AI answers, then collect them into one Markdown file with some custom formatting, then uses [Marked](https://github.com/markedjs/marked) library to convert Markdown to HTML, then formatting the HTML with custom theme.
@@ -94,7 +104,6 @@ The most known coffee types...
 
 #### HTML (.html)
 - Standalone file with embedded CSS and JavaScript
-- No external dependencies (fonts loaded via CDN)
 - Mobile-friendly and print-optimized
 - Dark mode automatically activates based on system preference
 
@@ -105,8 +114,11 @@ The most known coffee types...
 - **Inter font**: UI typography
 - **JetBrains Mono**: Code block typography
 
+## 🛑 Notes
+- If you found something off, please open an issue. 
+
 ## Roadmap
-**⚠️ The script now is in Phase 1, and I'm not sure if I'm going to add more feature or make it better, but here's what I think the script will look like.**
+**⚠️ The script now is in Phase 1, and I'm not sure if I'm going to add more features or make it better, but here's what I think the script will look like:**
 
 ### Phase 2
 - **Share URL Integration**: Include Brave Ask conversation share URL in exports by scraping or user input them manually in export menu.
@@ -122,7 +134,7 @@ The most known coffee types...
   - Offline operation, no dependencies.
   - Apply custom styling to existing markdown files.
 
-## Contributing and Suggestions
+## Contributing, Suggestions or want to say hello
 
 Feel free to submit issues or pull requests.
 
