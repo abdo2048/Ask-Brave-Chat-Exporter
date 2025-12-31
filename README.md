@@ -55,7 +55,7 @@ What is it? "it's a browser extension that lets you run userscripts, which are s
 2. **Install Script**
    - Go to latest release of script [latest release of script]([https://github.com/abdo2048/Ask-Brave-Chat-Exporter/releases/tag/v1.2](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/releases/latest))
    - Under **Assets**, rgiht click to copy link of script  `Ask.Brave.Chat.Exporter.x.js`
-   - Open Tampermonkey and paste script link in "Import from URL" field in Utilities tab as [shown here in this guide]([url](https://gist.github.com/jesterjunk/0344f1a7c1f67f52ffc716b17ee7f240)).
+   - Open Tampermonkey and paste script link in "Import from URL" field in Utilities tab as [shown here in this guide](https://gist.github.com/jesterjunk/0344f1a7c1f67f52ffc716b17ee7f240).
 
 3. **Navigate to Brave Ask**
    - Visit [search.brave.com/ask](https://search.brave.com/ask)
