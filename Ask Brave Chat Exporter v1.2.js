@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Brave Ask Exporter v1.0
+// @name         Ask Brave Chat Exporter
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
-// @description  Export Brave Ask conversations to Markdown and/or HTML
-// @author       You
+// @version      1.2.0
+// @description  Export Ask Brave conversations to Markdown and/or HTML
+// @author       abdo2048
 // @match        https://search.brave.com/ask*
 // @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
 // @grant        none
@@ -27,7 +27,7 @@
     // =============================================
     function createExportButton() {
         const btn = document.createElement('button');
-        btn.innerHTML = '📥 Export';
+        btn.innerHTML = '💾 Export';
         btn.id = 'brave-export-btn';
         btn.style.cssText = `
             position: fixed;
@@ -70,55 +70,62 @@
 
         const dialog = document.createElement('div');
         dialog.id = 'brave-export-dialog';
+        dialog.className = 'export-dialog-wrapper';
         dialog.innerHTML = `
-            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999998; display: flex; align-items: center; justify-content: center;">
-                <div style="background: white; border-radius: 12px; padding: 30px; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-                    <h2 style="margin: 0 0 20px 0; font-size: 24px; color: #333;">Export Conversation</h2>
+    <div class="export-dialog-content">
+        <h2>Export Conversation</h2>
 
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Title</label>
-                        <input type="text" id="export-title-input" placeholder="${escapeHtml(defaultTitle)}"
-                            style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
-                    </div>
+        <div style="margin-bottom: 25px;">
+            <label class="export-dialog-label">Title</label>
+            <input type="text"
+                   id="export-title"
+                   class="export-dialog-input"
+                   value=""
+                   placeholder="${defaultTitle}">
+        </div>
 
-                    <div style="margin-bottom: 25px;">
-                        <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #555;">Export formats</label>
-                        <div style="display: flex; gap: 20px;">
-                            <label style="display: flex; align-items: center; cursor: pointer;">
-                                <input type="checkbox" id="export-markdown" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                <span style="font-size: 14px;">Markdown</span>
-                            </label>
-                            <label style="display: flex; align-items: center; cursor: pointer;">
-                                <input type="checkbox" id="export-html" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                <span style="font-size: 14px;">HTML</span>
-                            </label>
-                        </div>
-                        <div style="margin-top: 12px; font-size: 13px; color: #666;">
-                            Need something? <a href="https://github.com/abdo2048/Ask-Brave-Chat-Exporter" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">Visit GitHub repo</a>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                        <button id="export-cancel-btn" style="padding: 10px 24px; border: 2px solid #ddd; background: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; color: #666;">
-                            Cancel
-                        </button>
-                        <button id="export-download-btn" style="padding: 10px 24px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
-                            Download
-                        </button>
-                    </div>
-                </div>
+        <div style="margin-bottom: 25px;">
+            <label class="export-dialog-label">Export formats</label>
+            <div class="export-dialog-checkboxes">
+                <label class="export-dialog-checkbox-label">
+                    <input type="checkbox" id="export-markdown" checked>
+                    <span>Markdown</span>
+                </label>
+                <label class="export-dialog-checkbox-label">
+                    <input type="checkbox" id="export-html" checked>
+                    <span>HTML</span>
+                </label>
             </div>
-        `;
+            <div style="margin-top: 12px;">
+                <span style="font-size: 13px; color: var(--text-secondary);">Need something? </span>
+                <a href="https://github.com/abdo2048/Ask-Brave-Chat-Exporter"
+                   target="_blank"
+                   class="export-dialog-link">Visit GitHub repo</a>
+            </div>
+        </div>
+
+        <div class="export-dialog-buttons">
+            <button id="export-cancel-btn" class="export-dialog-btn export-dialog-btn-cancel">Cancel</button>
+            <button id="export-download-btn" class="export-dialog-btn export-dialog-btn-download">Download</button>
+        </div>
+    </div>
+`;
+
 
         document.body.appendChild(dialog);
 
         // Event listeners
         document.getElementById('export-cancel-btn').onclick = function() {
-            dialog.remove();
+
+        // Clean up Enter key listener
+        if (dialog._enterKeyHandler) {
+            document.removeEventListener('keydown', dialog._enterKeyHandler);
+        }
+        dialog.remove();
         };
 
         document.getElementById('export-download-btn').onclick = function() {
-            const titleInput = document.getElementById('export-title-input').value.trim();
+            const titleInput = document.getElementById('export-title').value.trim();
             const title = titleInput || defaultTitle;
             const exportMd = document.getElementById('export-markdown').checked;
             const exportHtml = document.getElementById('export-html').checked;
@@ -128,12 +135,34 @@
                 return;
             }
 
-            dialog.remove();
+
+        // Clean up Enter key listener
+        if (dialog._enterKeyHandler) {
+            document.removeEventListener('keydown', dialog._enterKeyHandler);
+        }
+        dialog.remove();
             startExport(title, exportMd, exportHtml);
         };
 
+    // Add Enter key support for export dialog
+    const handleEnterKey = function(e) {
+        const dialog = document.getElementById('brave-export-dialog');
+        if (e.key === 'Enter' && dialog) {
+            e.preventDefault();
+            const downloadBtn = document.getElementById('export-download-btn');
+            if (downloadBtn) {
+                downloadBtn.click();
+            }
+        }
+    };
+
+    document.addEventListener('keydown', handleEnterKey);
+
+    // Store handler reference for cleanup
+    dialog._enterKeyHandler = handleEnterKey;
+
         // Focus title input
-        document.getElementById('export-title-input').focus();
+        document.getElementById('export-title').focus();
     }
 
     // =============================================
@@ -362,7 +391,7 @@ marked.use({ renderer });
     <title>${escapeHtml(title)}</title>
     <link rel="preconnect" href="https://rsms.me/">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/index.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/index.css">
     <style>
 /* --- EPIC THEME SYSTEM (WCAG AA+, Dark Mode, Fluid Scaling) --- */
 :root {
@@ -399,7 +428,7 @@ marked.use({ renderer });
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Base text: 16px -> 18px */
-  --text-scale-base: clamp(1rem, 1vw + 0.8rem, 1.125rem); 
+  --text-scale-base: clamp(1rem, 1vw + 0.8rem, 1.125rem);
 
   /* H1: Was clamp(2rem, 4vw+1rem, 3rem) -> Reduced ~10% */
   --text-scale-h1: clamp(1.8rem, 3.5vw + 0.9rem, 2.7rem);
@@ -641,6 +670,98 @@ pre code {
 }
 
 /* Dark mode border for inline code to make it pop slightly */
+
+/* --- TABLES --- */
+.table-wrapper {
+  position: relative;
+  margin: 2rem 0;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+}
+
+thead {
+  background: var(--primary);
+  color: white;
+}
+
+thead th {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:nth-child(odd) {
+  background: var(--bg-surface);
+}
+
+tbody tr:nth-child(even) {
+  background: var(--bg-body);
+}
+
+tbody tr:hover {
+  background: var(--bg-blockquote-q);
+}
+
+tbody td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  color: var(--text-primary);
+}
+
+/* First column (usually labels) - make bold */
+tbody td:first-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .table-wrapper {
+    border-radius: var(--radius-sm);
+  }
+
+  table {
+    font-size: 0.8rem;
+  }
+
+  thead th {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  tbody td {
+    padding: 0.625rem 0.75rem;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  thead {
+    background: var(--primary-hover);
+  }
+
+  tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :not(pre) > code {
     border-color: rgba(255,255,255,0.1);
@@ -662,8 +783,12 @@ pre code {
   opacity: 0;
 }
 
+
+
+
 .code-wrapper:hover .copy-btn,
-.question:hover .copy-btn {
+.question:hover .copy-btn,
+.table-wrapper:hover .copy-btn {
   opacity: 1;
 }
 
@@ -672,6 +797,113 @@ pre code {
   border-color: var(--primary);
   color: white;
 }
+
+/* --- TABLE THREE-DOT MENU --- */
+.table-menu-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  z-index: 10;
+  padding: 0;
+}
+
+.table-menu-btn:hover {
+  background: var(--bg-blockquote-q);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.table-menu-btn:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dropdown menu */
+.table-dropdown {
+  position: absolute;
+  top: 2.75rem;
+  right: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.table-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.table-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.table-dropdown-item:hover {
+  background: var(--bg-blockquote-q);
+}
+
+.table-dropdown-item:active {
+  background: var(--bg-blockquote-note);
+}
+
+.table-dropdown-item:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.table-dropdown-item span {
+  font-size: 16px;
+}
+
+/* Separator */
+.table-dropdown-separator {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.25rem 0;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .table-menu-btn {
+    background: var(--bg-body);
+  }
+
+  .table-dropdown {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+}
+
 
 /* --- BLOCKQUOTES & QUESTIONS --- */
 
@@ -735,6 +967,151 @@ blockquote {
 }
 
 .separator { display: none; }
+
+/* --- EXPORT DIALOG DARK MODE SUPPORT --- */
+.export-dialog-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  backdrop-filter: blur(4px);
+}
+
+.export-dialog-content {
+  background: var(--bg-surface);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  border: 1px solid var(--border-color);
+}
+
+.export-dialog-content h2 {
+  margin: 0 0 25px 0;
+  font-size: 24px;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.export-dialog-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.export-dialog-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-base);
+  background: var(--bg-body);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.export-dialog-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.export-dialog-checkboxes {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.export-dialog-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.export-dialog-checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.export-dialog-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.export-dialog-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.export-dialog-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.export-dialog-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: var(--font-base);
+}
+
+.export-dialog-btn-cancel {
+  background: var(--bg-body);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.export-dialog-btn-cancel:hover {
+  background: var(--bg-blockquote-q);
+  color: var(--text-primary);
+}
+
+.export-dialog-btn-download {
+  background: var(--primary);
+  color: white;
+}
+
+.export-dialog-btn-download:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .export-dialog-wrapper {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  .export-dialog-content {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  }
+}
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 1024px) {
@@ -881,6 +1258,196 @@ document.addEventListener('DOMContentLoaded', () => {
         addCopyButton(q, text);
     });
 
+
+    // 4. WRAP TABLES AND ADD THREE-DOT MENU
+    document.querySelectorAll('table').forEach(table => {
+        // Create wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-wrapper';
+
+        // Insert wrapper before table
+        table.parentNode.insertBefore(wrapper, table);
+
+        // Move table into wrapper
+        wrapper.appendChild(table);
+
+        // Add three-dot menu
+        addTableMenu(wrapper, table);
+    });
+
+    function addTableMenu(wrapper, table) {
+        // Create menu button
+        const menuBtn = document.createElement('button');
+        menuBtn.className = 'table-menu-btn';
+        menuBtn.innerHTML = '⋮';
+        menuBtn.setAttribute('aria-label', 'Table options');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.setAttribute('aria-haspopup', 'true');
+
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'table-dropdown';
+        dropdown.setAttribute('role', 'menu');
+
+        // Extract table data in all formats
+        const plainText = extractTableAsPlainText(table);
+        const csvText = extractTableAsTSV(table);
+        const markdownText = extractTableAsMarkdown(table);
+
+        // Menu items
+        const items = [
+            {
+                icon: '📊',
+                text: 'Copy for Excel',
+                action: () => copyToClipboard(csvText, 'CSV')
+            },
+            {
+                icon: '📋',
+                text: 'Copy as Text',
+                action: () => copyToClipboard(plainText, 'Table')
+            },
+            {
+                separator: true
+            },
+            {
+                icon: '📝',
+                text: 'Copy Markdown',
+                action: () => copyToClipboard(markdownText, 'Markdown')
+            }
+        ];
+
+        // Build dropdown items
+        items.forEach((item, index) => {
+            if (item.separator) {
+                const sep = document.createElement('div');
+                sep.className = 'table-dropdown-separator';
+                dropdown.appendChild(sep);
+            } else {
+                const menuItem = document.createElement('button');
+                menuItem.className = 'table-dropdown-item';
+                menuItem.setAttribute('role', 'menuitem');
+                menuItem.setAttribute('tabindex', '-1');
+
+                menuItem.innerHTML = '<span>' + item.icon + '</span>' + item.text;
+
+                menuItem.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    item.action();
+                    closeDropdown();
+                });
+
+                dropdown.appendChild(menuItem);
+            }
+        });
+
+        // Toggle dropdown
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            const isActive = dropdown.classList.contains('active');
+
+            // Close all other dropdowns first
+            document.querySelectorAll('.table-dropdown.active').forEach(d => {
+                d.classList.remove('active');
+            });
+
+            if (!isActive) {
+                dropdown.classList.add('active');
+                menuBtn.setAttribute('aria-expanded', 'true');
+                // Focus first menu item
+                const firstItem = dropdown.querySelector('.table-dropdown-item');
+                if (firstItem) firstItem.setAttribute('tabindex', '0');
+            } else {
+                closeDropdown();
+            }
+        }
+
+        function closeDropdown() {
+            dropdown.classList.remove('active');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            dropdown.querySelectorAll('.table-dropdown-item').forEach(item => {
+                item.setAttribute('tabindex', '-1');
+            });
+        }
+
+        // Copy to clipboard helper
+        function copyToClipboard(text, format) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const originalText = menuBtn.innerHTML;
+                menuBtn.innerHTML = '✓';
+                menuBtn.style.color = 'var(--primary)';
+
+                setTimeout(() => {
+                    menuBtn.innerHTML = originalText;
+                    menuBtn.style.color = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Event listeners
+        menuBtn.addEventListener('click', toggleDropdown);
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!wrapper.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Keyboard navigation
+        dropdown.addEventListener('keydown', (e) => {
+            const items = Array.from(dropdown.querySelectorAll('.table-dropdown-item'));
+            const currentIndex = items.findIndex(item => item === document.activeElement);
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextIndex = (currentIndex + 1) % items.length;
+                items[nextIndex].focus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevIndex = currentIndex <= 0 ? items.length - 1 : currentIndex - 1;
+                items[prevIndex].focus();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeDropdown();
+                menuBtn.focus();
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (document.activeElement.classList.contains('table-dropdown-item')) {
+                    document.activeElement.click();
+                }
+            }
+        });
+
+        // Append to wrapper
+        wrapper.appendChild(menuBtn);
+        wrapper.appendChild(dropdown);
+    }
+
+    // Helper function to extract table as plain text
+    function extractTableAsPlainText(table) {
+        let text = '';
+        const NEWLINE = String.fromCharCode(10);
+
+        // Extract headers
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        if (headers.length > 0) {
+            text += headers.join('  ') + NEWLINE;
+            text += headers.map(() => '---').join('  ') + NEWLINE;
+        }
+
+        // Extract rows
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
+            text += cells.join('  ') + NEWLINE;
+        });
+
+        return text;
+    }
+
     function addCopyButton(parent, textToCopy) {
         const btn = document.createElement('button');
         btn.className = 'copy-btn';
@@ -895,6 +1462,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
         parent.appendChild(btn);
     }
+    // Helper function to convert HTML table to markdown
+    function extractTableAsMarkdown(table) {
+        let markdown = '';
+
+        // Extract headers
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        if (headers.length > 0) {
+            markdown += '| ' + headers.join(' | ') + ' |' + String.fromCharCode(10);
+            markdown += '|' + headers.map(() => '---').join('|') + '|' + String.fromCharCode(10);
+        }
+
+        // Extract rows
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
+            markdown += '| ' + cells.join(' | ') + ' |' + String.fromCharCode(10);
+        });
+
+        return markdown;
+    }
+
+// Helper function to convert HTML table to TSV (for Excel)
+function extractTableAsTSV(table) {
+    let tsv = '';
+    const TAB = String.fromCharCode(9);
+    const NEWLINE = String.fromCharCode(10);
+
+    // Extract headers
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+    if (headers.length > 0) {
+        tsv += headers.join(TAB) + NEWLINE;
+    }
+
+    // Extract rows
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const cells = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
+        tsv += cells.join(TAB) + NEWLINE;
+    });
+
+    return tsv;
+}
+
 });
 
     </script>
@@ -991,7 +1601,7 @@ function extractH2Headers(markdown) {
         overlay.innerHTML = `
             <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 999999; display: flex; align-items: center; justify-content: center;">
                 <div style="text-align: center; color: white;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">⏳</div>
+                    <div style="font-size: 60px; margin-bottom: 40px;">⏳</div>
                     <div id="overlay-message" style="font-size: 24px; font-weight: 600;">Processing...</div>
                     <div style="font-size: 14px; margin-top: 12px; opacity: 0.7;">Please do not interact with the page</div>
                 </div>
@@ -1073,7 +1683,212 @@ function extractH2Headers(markdown) {
     // =============================================
     // INITIALIZE
     // =============================================
+    // Inject dialog CSS into page
+function injectDialogCSS() {
+    const style = document.createElement('style');
+    style.textContent = `
+/* --- EXPORT DIALOG DARK MODE SUPPORT --- */
+.export-dialog-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  backdrop-filter: blur(4px);
+}
+
+.export-dialog-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  border: 1px solid #e2e8f0;
+}
+
+.export-dialog-content h2 {
+  margin: 0 0 25px 0;
+  font-size: 24px;
+  color: #0f172a;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 15px;
+}
+
+.export-dialog-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.export-dialog-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: Inter, system-ui, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.export-dialog-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.export-dialog-checkboxes {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.export-dialog-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.export-dialog-checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4f46e5;
+}
+
+.export-dialog-link {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.export-dialog-link:hover {
+  color: #4338ca;
+  text-decoration: underline;
+}
+
+.export-dialog-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.export-dialog-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.export-dialog-btn-cancel {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.export-dialog-btn-cancel:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.export-dialog-btn-download {
+  background: #4f46e5;
+  color: white;
+}
+
+.export-dialog-btn-download:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .export-dialog-wrapper {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  .export-dialog-content {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  }
+
+  .export-dialog-content h2 {
+    color: #f1f5f9;
+    border-bottom-color: #334155;
+  }
+
+  .export-dialog-label {
+    color: #f1f5f9;
+  }
+
+  .export-dialog-input {
+    background: #0f172a;
+    color: #f1f5f9;
+    border-color: #334155;
+  }
+
+  .export-dialog-checkbox-label {
+    color: #f1f5f9;
+  }
+
+  .export-dialog-link {
+    color: #818cf8;
+  }
+
+  .export-dialog-link:hover {
+    color: #6366f1;
+  }
+
+  .export-dialog-btn-cancel {
+    background: #0f172a;
+    color: #cbd5e1;
+    border-color: #334155;
+  }
+
+  .export-dialog-btn-cancel:hover {
+    background: #334155;
+    color: #f1f5f9;
+  }
+
+  .export-dialog-btn-download {
+    background: #818cf8;
+  }
+
+  .export-dialog-btn-download:hover {
+    background: #6366f1;
+  }
+}
+    `;
+    document.head.appendChild(style);
+}
+
+
     function init() {
+        // Inject dialog CSS first
+        injectDialogCSS();
+
         // Wait for page to fully load
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', createExportButton);
