@@ -16,6 +16,38 @@
 
 https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 
+&nbsp;
+
+## Screenshots
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/1d8fc990-4253-402a-8087-95cad625f5cf" width="49%" />
+  &nbsp;
+  <img src="https://github.com/user-attachments/assets/abda0ce0-c005-4b38-a45e-7dd7e430c38c" width="49%" />
+</div>
+
+&nbsp;
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/58aed5ab-4e66-4f27-98c6-f3434f045e18" width="49%" />
+  &nbsp;
+  <img src="https://github.com/user-attachments/assets/74c9fd5d-62ab-4a09-9aeb-1b23282e6343" width="49%" />
+</div>
+
+&nbsp;
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a9b9ebb3-175f-4dcf-9ea1-78902aee3ce4" width="49%" />
+  &nbsp;
+  <img src="https://github.com/user-attachments/assets/4d3e0677-56bd-437b-95ea-7b5e9c7ef0e5" width="49%" />
+</div>
+
+&nbsp;
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/e4a13af4-dbc5-4ca8-90f1-646ff86f750b" width="50%" />
+</div>
+
 ## Features
 
 ### Core Functionality
@@ -129,7 +161,7 @@ The most known coffee types...
 - **Resources Section**: Append source (web results, videos, news, citations) at end of exported files.
 - **Bulk Export**: Export multiple conversations in one operation.
 - **Configurable Export Options**: Toggle what to include (TOC, metadata, resources, etc.)
-- **Standalone Converter**: Pre-built binary to convert any Markdown to HTML using our theme:
+- **Standalone Converter**: Pre-built binary to convert any chat Markdown to HTML using this theme:
   - Works with any markdown file (not just Brave exports).
   - Offline operation, no dependencies.
   - Apply custom styling to existing markdown files.
