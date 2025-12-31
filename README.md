@@ -106,7 +106,7 @@ The most known coffee types...
 - **JetBrains Mono**: Code block typography
 
 ## Roadmap
-**⚠️ I don't know if I'm going to further make enhancements or pur new features, but I guess next phases is what the final script I magine to be.**
+**⚠️ I'm not sure if I'm going to add more feature or make it better, but here's what I think the script will look like..**
 
 ### Phase 2
 - **Share URL Integration**: Include Brave Ask conversation share URL in exports by scraping or user input them manually in export menu.
