@@ -101,7 +101,7 @@ What is it? `it's a browser extension that lets you run userscripts, which are s
    - Under **Assets**, rgiht click to copy link of script  `Ask.Brave.Chat.Exporter.x.js`
    - Open Tampermonkey and paste script link in "Import from URL" field in Utilities tab as [shown here in this guide](https://gist.github.com/jesterjunk/0344f1a7c1f67f52ffc716b17ee7f240)
 
-4. **Navigate to Brave Ask**
+3. **Navigate to Brave Ask**
    - Visit [search.brave.com/ask](https://search.brave.com/ask)
    - The export button will appear at the bottom-right corner.
 
