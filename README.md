@@ -85,7 +85,7 @@ https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 
 ### Requirements
 We need **Tampermonkey.**
-What is it? "it's a browser extension that lets you run userscripts, which are small programs that can customize websites by adding features or modifying existing ones."
+What is it? `it's a browser extension that lets you run userscripts, which are small programs that can customize websites by adding features or modifying existing ones.`
 
 ### Steps
 
@@ -95,13 +95,15 @@ What is it? "it's a browser extension that lets you run userscripts, which are s
    - [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 
 2. **Install Script**
+- **_Method 1 (Greasyfork):_** Go to https://greasyfork.org/en/scripts/561042-ask-brave-chat-exporter and click the green button `Install this script`.
+- **_Method 2 (GitHub):_**
    - Go to latest release of script [latest release of script]([https://github.com/abdo2048/Ask-Brave-Chat-Exporter/releases/tag/v1.2](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/releases/latest))
    - Under **Assets**, rgiht click to copy link of script  `Ask.Brave.Chat.Exporter.x.js`
-   - Open Tampermonkey and paste script link in "Import from URL" field in Utilities tab as [shown here in this guide](https://gist.github.com/jesterjunk/0344f1a7c1f67f52ffc716b17ee7f240).
+   - Open Tampermonkey and paste script link in "Import from URL" field in Utilities tab as [shown here in this guide](https://gist.github.com/jesterjunk/0344f1a7c1f67f52ffc716b17ee7f240)
 
-3. **Navigate to Brave Ask**
+4. **Navigate to Brave Ask**
    - Visit [search.brave.com/ask](https://search.brave.com/ask)
-   - The export button will appear at the bottom-right corner
+   - The export button will appear at the bottom-right corner.
 
 ## Usage
 
@@ -148,6 +150,10 @@ The most known coffee types...
 
 ## 🛑 Notes
 - If you found something off, please open an issue. 
+- When reporting bugs, please include:
+  - Browser name.
+  - Example conversation share URL (if possible).
+  - Console error messages if applicable (F12 → Console).
 
 ## Roadmap
 **⚠️ The script now is in Phase 1, and I'm not sure if I'm going to add more features or make it better, but here's what I think the script will look like:**
@@ -169,9 +175,3 @@ The most known coffee types...
 ## Contributing, Suggestions or want to say hello
 
 Feel free to submit issues or pull requests.
-
-### Reporting Bugs
-When reporting bugs, please include:
-- Browser name.
-- Example conversation share URL (if possible).
-- Console error messages if applicable (F12 → Console).
