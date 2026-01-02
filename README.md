@@ -79,7 +79,7 @@ https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
   - Optimized font sizes and spacing.
 
 ### How does it work?
-- The script clicks copy answer buttons in chat for user prompts and AI answers, then collect them into one Markdown file with some custom formatting, then uses [Marked](https://github.com/markedjs/marked) library to convert Markdown to HTML, then formatting the HTML with custom theme.
+- The script clicks copy buttons in chat for user prompts and AI answers, then collect them into one Markdown file with some custom formatting, then uses [Marked](https://github.com/markedjs/marked) library to convert Markdown to HTML, then formatting the HTML with custom theme. More info in [Technical Details About How Does Script Work and Ask Brave Behavior](https://github.com/abdo2048/Ask-Brave-Chat-Exporter#technical-details-about-how-does-script-work-and-ask-brave-behavior)
 
 ## Installation
 
@@ -141,13 +141,6 @@ The most known coffee types...
 - Mobile-friendly and print-optimized
 - Dark mode automatically activates based on system preference
 
-## Technical Details
-
-### Dependencies
-- **marked.js**: Markdown to HTML conversion
-- **Inter font**: UI typography
-- **JetBrains Mono**: Code block typography
-
 ## 🛑 Notes
 - If you found something off, please open an issue. 
 - When reporting bugs, please include:
@@ -175,3 +168,10 @@ The most known coffee types...
 ## Contributing, Suggestions or want to say hello
 
 Feel free to submit issues or pull requests.
+
+## Technical Details About How Does Script Work and Ask Brave Behavior (still working on this section)
+
+### Dependencies
+- **marked.js**: Markdown to HTML conversion
+- **Inter font**: UI typography
+- **JetBrains Mono**: Code block typography
