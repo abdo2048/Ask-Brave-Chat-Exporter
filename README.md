@@ -6,7 +6,8 @@
   <br>
 </h1>
 
-<h4 align="center">A browser userscript that exports Ask Brave AI conversations to Markdown and HTML formats with professional styling and enhanced features. (((Built with AI tools)))</h4>
+<h4 align="center">A browser userscript that exports Ask Brave AI conversations to Markdown and HTML formats with professional styling and enhanced features.<br>
+  (((Built with AI tools)))</h4>
 <p align="center">
     
   </a>
