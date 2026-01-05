@@ -143,6 +143,9 @@ The most known coffee types...
 - Dark mode automatically activates based on system preference
 
 ## 🛑 Notes
+- When running the script, the browser may ask you if you want let the script use your clipboard or not. You should press **Allow** so that the script can copy user prompts ans Ai answers to clipboard.
+  - <img width="49%" alt="brave_tHOfxefFbvi" src="https://github.com/user-attachments/assets/163137af-ddb7-4545-bd02-10db670be13c" />
+
 - If you found something off, please open an issue. 
 - When reporting bugs, please include:
   - Browser name.
