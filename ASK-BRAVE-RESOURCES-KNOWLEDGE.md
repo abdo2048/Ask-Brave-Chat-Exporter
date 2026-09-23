@@ -106,10 +106,14 @@ discussions/shopping`) = separate optional sections. Offer a config option:
 6. Signed params (`sig`,`nonce`,`symKey`) mean we cannot replay arbitrary requests ourselves easily —
    but we don't need to: the page already fetches `get_current_state`; we just intercept it.
 
-## 7. Open items (to verify next capture)
-- Exact shape of video/image/news/discussion/shopping result arrays (we saw the trigger events;
-  their `service_response` was null in cached state — need a live SSE capture to see payloads).
-- Whether shared-link pages expose the same state without auth.
+## 7. Open items — ✅ ALL RESOLVED (see §9 for evidence)
+- ~~Exact shape of video/image/news/discussion/shopping result arrays~~ → **RESOLVED**: payloads do NOT
+  arrive via SSE (`service_response: null` there by design); they come from **`POST /api/tap/v1/run_tool`
+  responses**, which the client re-fires per stored augment event when a conversation loads. Full shapes
+  documented in §9 item 1.
+- ~~Whether shared-link pages expose the same state without auth~~ → **RESOLVED: YES**, verified in an
+  isolated cookie-less browser context. The `#<fragment>` of the share URL IS the complete authorization
+  (`symmetric_key`); `source=shared` required. Details in §9 item 2.
 
 ---
 
@@ -140,11 +144,63 @@ discussions/shopping`) = separate optional sections. Offer a config option:
 
 - **Standalone-converter risk confirmed:** HMAC signing (nonce + per-conversation symKey) means API-mode export requires an authenticated browser context. A standalone offline converter cannot call these APIs - it would still need clipboard/DOM paste input. This validates keeping the userscript as primary tool.
 
-### TODO status matrix
+### TODO status matrix (superseded — see §9 for final statuses)
 | Item | Source | Status |
 |---|---|---|
-| Media gallery payload shapes | section 7 open item | Still needs 1 live SSE capture |
+| Media gallery payload shapes | section 7 open item | ~~Still needs 1 live SSE capture~~ → RESOLVED via run_tool (§9.1) |
 | Bulk export via conversation IDs | report-2 | Endpoint confirmed, ready to implement |
 | PDF print CSS | issue #1 | Not started |
 | Firefox clipboard permission | issue #3 | README workaround exists; API mode makes it moot |
 | Spanish/localized copy buttons | issue #5 | Selector strategy defined above; not yet coded |
+
+## 9. APPENDIX: Section 7 Resolved (live network capture, 2026-09-23)
+Source: `SECTION7-RESOLVED.md` (other-AI browser-MCP/DevTools probe). Evidence files:
+`rt1084…rt1091.res.network-response` (run_tool responses, 3KB–83KB each).
+
+### 9.1 Media/gallery payload shapes — RESOLVED (and premise corrected)
+**Key correction:** result arrays never appear in the SSE stream (`service_response: null` there by
+design). They arrive via **`POST /api/tap/v1/run_tool` responses**. When any conversation loads, the
+client re-fires one `run_tool` POST per stored `augment_with_*` event (9 observed, reqids 1084–1091).
+→ Our capture tooling must target **run_tool response bodies**, not SSE payloads.
+
+| Tool | results live at | count | shape summary |
+|---|---|---|---|
+| `augment_with_videos` | `service_response.results[]` (NOT under `.web`) | 50 | `{type:'video_result', title, url (youtube watch), description, page_age ISO, age, video:{duration, creator, publisher, tags[], author:{name,url}}, meta_url:{netloc,path}, thumbnail:{src (imgs proxied), original (i.ytimg.com maxresdefault)}}` |
+| `augment_with_shopping` | `service_response.results[]` | 1 | Element carries its OWN top-level `signature:{product_name,nonce,sig}` besides request signed_params. `{subtype:'product', product:{name, price, offers:[{priceCurrency}], rating:{ratingValue,bestRating,reviewCount}}}` |
+| `augment_with_discussions` | `service_response.web.results[]` filtered by `subtype:'qa'` | 10 | **No dedicated discussions array** — the Reddit/forum strip = web results with `subtype:'qa'` |
+| `augment_with_web` | `service_response.web.results[]` | 10 | `{subtype:'generic'|'faq'|'qa'|'article', profile{}, organization{}, faq.items[{question,answer}], thumbnail.original}`; description contains `<strong>` markup |
+| `augment_with_news` | `service_response.news.results[]` | 24 | `{title, url, profile{name}, breaking, is_live, thumbnail.src, age, page_age ISO}` |
+| `augment_with_images` | `service_response.results[]` | — | `{source (domain), confidence:'high'|'medium'|'low', thumbnail.src, properties:{resized, placeholder}}` |
+
+Exporter implementation pointers:
+- Match each run_tool response to its trigger via `signed_params.query` + the wrapper `augment_with_*` event.
+- Never parse `service_response` from SSE events (always null).
+- Prices/ratings in answer tables come from `product.price` / `offers[]` / `rating{}`.
+- Image `confidence` field ranks which images belong to the answer strip.
+- Canonical video URL: `url` (watch link) or `thumbnail.original` (maxres poster).
+
+### 9.2 Shared-link auth — RESOLVED: works WITHOUT login (verified)
+In a fully isolated, cookie-less Chrome context, loading
+`https://search.brave.com/ask?q=…&conversation=<id>#<hash>` caused
+`GET /api/tap/v1/get_current_state?id=<id>&symmetric_key=<hash>&source=shared` → **200** with the full
+conversation `[timeline, SSE-event-log]`, followed by 9 run_tool re-fires and complete rendering.
+- **The `#` fragment IS the complete authorization** (it is the symmetric key).
+- `source=shared` is required; `source=cached`/`source=session` → 404.
+
+### 9.3 Architecture impact (with the important caveat)
+- **Read side is standalone-capable:** a converter/bulk exporter can fetch `get_current_state` without
+  login given only the share URL (with fragment) or a saved `symmetric_key`. This de-risks "API mode".
+- **Re-fetch side still needs a browser context:** `run_tool` requests require HMAC-signed `signed_params`
+  (nonce+sig) minted the way the SvelteKit app does. So the **userscript remains the primary capture
+  tool**; the standalone path covers state reading (citations/text), while media galleries either need
+  the userscript's intercepted run_tool bodies or graceful degradation to citation-only export.
+
+### Final TODO status matrix
+| Item | Status |
+|---|---|
+| Media gallery payload shapes (§7 item 1) | ✅ RESOLVED — captured via run_tool responses (§9.1) |
+| Shared-link state without auth (§7 item 2) | ✅ RESOLVED — verified stateless via `#fragment` (§9.2) |
+| Bulk export via conversation IDs | Ready — recipe: `get_current_state?source=shared` + re-fire run_tool |
+| PDF print CSS (issue #1) | Not started |
+| Firefox clipboard permission (issue #3) | README workaround; API mode makes it moot |
+| Spanish/localized copy buttons (issue #5) | Selector strategy defined; not yet coded |
