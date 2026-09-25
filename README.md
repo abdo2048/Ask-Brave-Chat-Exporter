@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h4 align="center"> browser userscript that exports Ask Brave AI conversations to Markdown and styled HTML — with sources, font-size controls, and print-to-PDF support.<br>
+<h4 align="center">browser userscript that exports Ask Brave AI conversations to Markdown and styled HTML — with sources, font-size controls, and print-to-PDF support.<br>
   (((Built with AI tools)))</h4>
 <p align="center">
     
@@ -180,7 +180,7 @@ Questions always come from the DOM (Brave doesn't echo them back in the live str
 
 ## Contributing
 
-Bug reports and pull requests are welcome.
+Bug reports, pull requests or suggestions are welcome
 
 When reporting a bug, please include:
 - Browser name and version
@@ -193,12 +193,6 @@ See [TECHNICAL.md](TECHNICAL.md) for architecture details before submitting code
 ## 🛑 Notes
 - When running the script, the browser may ask you if you want let the script use your clipboard or not. You should press **Allow** so that the script can copy user prompts ans Ai answers to clipboard.
   - <img width="49%" alt="brave_tHOfxefFbvi" src="https://github.com/user-attachments/assets/163137af-ddb7-4545-bd02-10db670be13c" />
-
-- If you found something off, please open an issue. 
-- When reporting bugs, please include:
-  - Browser name.
-  - Example conversation share URL (if possible).
-  - Console error messages if applicable (F12 → Console).
 
 ## Roadmap
 
@@ -236,11 +230,7 @@ Status legend: ✅ **Done** · 🚧 **In progress** · 📋 **Planned** · ⏸�
   A pre-built binary to convert any Markdown file to this HTML theme, offline.
   **Why deferred:** Brave's API requests are HMAC-signed with per-conversation symmetric keys generated client-side. A standalone tool cannot mint those signatures, so it can only convert already-exported Markdown — not fetch conversations on its own. The userscript remains the only viable capture tool for live data. The offline Markdown → HTML converter is still achievable as a separate small project, but it belongs outside this userscript.
 
-## Contributing, Suggestions or want to say hello
-
-Feel free to submit issues or pull requests.
-
-### Dependencies
+## Dependencies
 - **marked.js**: Markdown to HTML conversion
 - **Inter font**: UI typography
 - **JetBrains Mono**: Code block typography
