@@ -1,4 +1,4 @@
-
+# Install the [test version here](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/blob/main/README.md#test-version-%EF%B8%8F-please-install-this-version-ask-brave-chat-exporter-155userjs-before-you-make-new-issue-once-test-is-done-i-will-release-it)
 <h1 align="center">
   <br>
   <img width="430" height="215" alt="Ask Brave Chat Exporter main page" src="https://github.com/user-attachments/assets/e097cac0-8ac3-4c69-a400-dfc0c8f94bec" />
