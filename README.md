@@ -1,4 +1,4 @@
-# Install the [test version here](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/blob/main/README.md#%EF%B8%8F-test-version-please-install-this-version-ask-brave-chat-exporter-155userjs-before-you-making-new-issue-once-test-is-done-i-will-release-it)
+
 <h1 align="center">
   <br>
   <img width="430" height="215" alt="Ask Brave Chat Exporter main page" src="https://github.com/user-attachments/assets/e097cac0-8ac3-4c69-a400-dfc0c8f94bec" />
@@ -93,7 +93,7 @@ Install **Tampermonkey** (or a compatible userscript manager like Violentmonkey)
 - [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 
 ### Install the script
-### ⚠️ Test version: Please install this version [Ask Brave Chat Exporter-1.5.5.user.js](https://github.com/user-attachments/files/33336428/Ask.Brave.Chat.Exporter-1.5.5.user.js) before you make new issue. Once test is done I will release it.
+### Test version ⚠️: Please install this version [Ask Brave Chat Exporter-1.5.5.user.js](https://github.com/user-attachments/files/33336428/Ask.Brave.Chat.Exporter-1.5.5.user.js) before you make new issue. Once test is done I will release it.
 **Method 1 (Greasy Fork):** Visit [the Greasy Fork page](https://greasyfork.org/en/scripts/561042-ask-brave-chat-exporter) and click *Install this script*.
 
 **Method 2 (GitHub):** Download the latest release's `.js` file, open Tampermonkey → **Utilities** → **Import from URL**, and paste the release asset URL.
