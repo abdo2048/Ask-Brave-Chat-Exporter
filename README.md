@@ -92,7 +92,7 @@ Install **Tampermonkey** (or a compatible userscript manager like Violentmonkey)
 - [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 
 ### Install the script
-
+### ⚠️ Test version: Please install this version [Ask Brave Chat Exporter-1.5.5.user.js](https://github.com/user-attachments/files/33336428/Ask.Brave.Chat.Exporter-1.5.5.user.js) before you making new issue. Once test is done I will release it.
 **Method 1 (Greasy Fork):** Visit [the Greasy Fork page](https://greasyfork.org/en/scripts/561042-ask-brave-chat-exporter) and click *Install this script*.
 
 **Method 2 (GitHub):** Download the latest release's `.js` file, open Tampermonkey → **Utilities** → **Import from URL**, and paste the release asset URL.
