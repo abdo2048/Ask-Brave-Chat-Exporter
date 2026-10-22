@@ -1,4 +1,3 @@
-# Install the [test version here](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/blob/main/README.md#test-version-%EF%B8%8F-please-install-this-version-ask-brave-chat-exporter-155userjs-before-you-make-new-issue-once-test-is-done-i-will-release-it)
 <h1 align="center">
   <br>
   <img width="430" height="215" alt="Ask Brave Chat Exporter main page" src="https://github.com/user-attachments/assets/e097cac0-8ac3-4c69-a400-dfc0c8f94bec" />
@@ -7,12 +6,8 @@
   <br>
 </h1>
 
-<h4 align="center">browser userscript that exports Ask Brave AI conversations to Markdown and styled HTML — with sources, font-size controls, and print-to-PDF support.<br>
+<h4 align="center">browser userscript that exports Ask Brave conversations to Markdown, standalone HTML, and print-to-PDF — with cited Sources and captured shopping results.<br>
   (((Built with AI tools)))</h4>
-<p align="center">
-    
-  </a>
-</p>
 
 &nbsp;
 
@@ -53,32 +48,48 @@ https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 ## Features
 
 ### Core
-- **Dual format export** — Markdown (.md) and HTML (.html)
+- **Multi-format export** — select Markdown (.md), HTML (.html), PDF, or combine them in one export action
+- **Two PDF profiles** — Reading retains HTML-like light-reader surfaces and the HTML font stack where available, plus screen-scale type, cited Sources, and light accent fills; Print-friendly uses smaller print-scale type, hides Sources, and flattens fills; both open a sandboxed browser print preview for Save as PDF
 - **Three capture methods** — Auto / API only / Clipboard only
 - **Custom conversation titles**
 - **Sources per answer** — every answer's citations appear as a numbered list in both Markdown and HTML
-- **Font-size controls** — base size, questions, answers, and headings scale independently; saved for next time
-- **Sources-in-print toggle** — choose whether source lists appear in printed/PDF output
+- **Font-size controls** — 16px body/master with independent Questions, Answers, Headings, and shared inline/block Code sliders; code defaults to 0.78rem (12.48px); settings persist
+- **Shopping results** — includes matching, passively captured product results at their answer position in Markdown, HTML, and Reading PDF; product prices are Brave-reported and may be cached
+- **HTML print options** — saved Sources and shopping settings control Ctrl+P from downloaded HTML only; direct PDF profiles use their own rules
 
 ### Markdown output
-- Emoji dividers for question separation (`◤━━━━━━ Q# ━━━━━◥`)
+- Callout question blocks (`> [!question] Q1`) — renders as a styled callout in Obsidian, plain blockquote elsewhere
 - Horizontal rules between Q&A pairs
-- Metadata header with title, export date, and capture method
+- Metadata header with title, export date, capture method, and the complete **Chat URL** (query and fragment preserved)
+- **Shopping results** appear in a three-column table, separately from formal Sources; only the product title is linked, and prices/merchant domains stay plain text
 - **Sources** section after each answer, linking cited URLs
 
 ### HTML output
-- **Professional theme** — WCAG AA+ compliant, automatic dark mode, fluid responsive typography
-- **Sticky table of contents** with active-section highlighting
+- **Theme control** — Light / Dark only; the first visit or a legacy `auto` preference follows the OS, and an explicit selection persists; printing always uses light tokens
+- **Nord code palette** — Nord5 `#E5E9F0` in light mode and Nord0 `#2E3440` in dark mode for both inline and block code; syntax colors are contrast-adjusted
+- **Offline-ready highlighting** — Highlight.js tokenizes supported languages at export time; highlighted HTML and CSS travel with the export, while unknown languages remain plain text
+- **Slate/Indigo page palette retained** — no page-wide Nord recolor
+- **Sticky table of contents** with active-section highlighting and auto-scroll
+- **Chat URL** shown as a link, preserving the complete current URL including query parameters and fragment
 - **Mobile-responsive** with hamburger menu
 - **Copy buttons** for code blocks and questions (appear on hover)
 - **Three-dot table menu** — Copy for Excel (TSV), Copy as Text, or Copy Markdown (appears on hover)
-- **Print-optimized** — hides UI chrome, repeats table headers across pages, avoids orphan headings
+- **Print-optimized** — downloaded HTML uses its own print stylesheet for Ctrl+P; it requests 0.5in margins, adds a styled clickable contents page, hides screen UI/export metadata, prints a crisp title, repeats table headers, and uses the 0.78 body / 0.92 code print scale. Direct PDF profiles use a separate sandboxed preview
+- **Shopping results** appear in a three-column grid at their answer positions; URLs are deduplicated by the approved rules, and alternate offers are clearly labeled as Brave-reported
 - **Sources block** after each answer with favicons and clickable links
 
 ### Compatibility
-- Works in **Firefox** and **Chromium-based browsers** (Chrome, Edge, Brave)
-- **Firefox-specific fix** — instead of reading the clipboard (which Firefox blocks without user gesture), the script taps the page's clipboard-write calls directly
-- **Localized copy-button detection** — falls back through aria-labels in 13+ languages
+- **Testing:** I tested the final v1.5.9 script and all tests passed.
+- **Firefox-specific handling** — observes the page's clipboard-write calls instead of trying to read the clipboard without a user gesture.
+- **Localized copy-button detection** — recognizes the supplied Brave copy-button labels for 49 display-language entries (38 distinct fallback labels, including legacy aliases).
+
+### Userscript managers
+
+| Manager | Support | Notes |
+|---|---|---|
+| **Tampermonkey** | Supported | Intended target. |
+| **Violentmonkey** | Supported | Intended target. |
+| **Greasemonkey** | Not supported | No compatibility promise. |
 
 ---
 
@@ -86,24 +97,31 @@ https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 
 ### Requirements
 
-Install **Tampermonkey** (or a compatible userscript manager like Violentmonkey):
+Install **Tampermonkey** (recommended) or **Violentmonkey**:
 
-- [Chrome Web Store](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-- [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
-- [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
+- [Chrome Web Store — Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+- [Firefox Add-ons — Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
+- [Firefox Add-ons — Violentmonkey](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/)
+- [Microsoft Edge Add-ons — Tampermonkey](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 
 ### Install the script
-### Test version ⚠️: Please install this version [Ask Brave Chat Exporter-1.5.5.user.js](https://github.com/user-attachments/files/33336428/Ask.Brave.Chat.Exporter-1.5.5.user.js) before you make new issue. Once test is done I will release it.
+
 **Method 1 (Greasy Fork):** Visit [the Greasy Fork page](https://greasyfork.org/en/scripts/561042-ask-brave-chat-exporter) and click *Install this script*.
 
-**Method 2 (GitHub):** Download the latest release's `.js` file, open Tampermonkey → **Utilities** → **Import from URL**, and paste the release asset URL.
+**Method 2 (GitHub):** Open or download the [latest script](https://raw.githubusercontent.com/abdo2048/Ask-Brave-Chat-Exporter/main/Ask-Brave-Chat-Exporter.js). If your browser or manager does not show an install prompt for the `.js` link, use Tampermonkey or Violentmonkey’s **Install from URL** option with that link (or import/paste the script), then review and confirm the installation.
+
+### 🛑 Notes
+
+If the browser asks for clipboard access, choose **Allow** when you want to export. The script uses Brave’s Copy controls to capture the text currently shown; declining may prevent clipboard-based capture.
+
+<img width="49%" alt="Brave clipboard permission prompt" src="https://github.com/user-attachments/assets/163137af-ddb7-4545-bd02-10db670be13c" />
 
 ### Use
 
-1. Visit [search.brave.com/ask](https://search.brave.com/ask) and open a conversation (or start a new one)
+1. Visit [search.brave.com/ask](https://search.brave.com/ask) or [safe.search.brave.com/ask](https://safe.search.brave.com/ask) and open a conversation (or start a new one)
 2. Click the **💾 Export** button (bottom-right corner)
-3. Choose your options in the dialog (title, formats, capture method, fonts, sources-in-print)
-4. Click **Download**
+3. Choose formats, a PDF profile if needed, capture method, title, fonts, and print settings
+4. Click **Export selected formats**; if PDF is selected, use **Save as PDF** in the browser print dialog
 
 ---
 
@@ -111,24 +129,46 @@ Install **Tampermonkey** (or a compatible userscript manager like Violentmonkey)
 
 | Option | What it does |
 |---|---|
-| **Formats** | Choose Markdown, HTML, or both |
-| **Capture method** | `Auto` tries API first, falls back to clipboard. `API only` fails cleanly if no capture. `Clipboard only` clicks Copy buttons and reads what the page writes |
-| **Include sources when printing** | Uncheck for paper-friendly output (sources stay on screen but hide in print/PDF) |
-| **Font size** | Four sliders: base size, questions, answers, headings. Saved automatically |
+| **Formats** | Select Markdown, HTML, PDF, or any combination. Markdown and HTML download as files; PDF opens the browser print preview. |
+| **PDF profile** | Choose Reading or Print-friendly for exporter-generated PDF. The comparison below explains the difference. HTML print options do not affect these profiles. |
+| **Capture method** | Choose Auto, API only, or Clipboard only. See the quick comparison below. Checking answers may change clipboard contents and take longer on long chats. |
+| **Include Sources when printing HTML** | Applies only to Ctrl+P from downloaded HTML. It does not change the screen view or direct PDF profiles. |
+| **Include shopping results when printing HTML** | Also applies only to Ctrl+P from downloaded HTML. Captured results appear only when Brave supplied matching data. |
+| **Font size** | Five saved sliders: Base, Questions, Answers, Headings, and Code (inline and block code together; default 0.78rem / 12.48px at the 16px base). |
+
+### Capture methods at a glance
+
+| Mode | Answer text | Sources |
+|---|---|---|
+| **Auto** | Keeps the answer currently shown; captured API text is used only for a verified match. | Adds captured Sources only when the match is clear; otherwise keeps the visible answer without uncertain Sources. |
+| **API only** | Requires every visible answer to be verified against captured API data. | Stops if any visible answer cannot be verified. |
+| **Clipboard only** | Uses the text copied by Brave's Copy controls. | Can still include captured Sources when the answer match is verified. |
 
 ---
 
-## Print / PDF tips
+## Print and PDF: choose a route
 
-The HTML export is print-optimized. Before saving as PDF:
+There are two print routes. Use the table to pick the one that matches what you want to do:
 
-1. Open the HTML file in your browser
-2. Press **Ctrl+P** (or **Cmd+P**)
-3. **Tick "Background graphics"** in the print dialog so colors and table headers render
-4. Set margins to your preference (default is fine)
-5. Choose **Save as PDF**
+| Route | Use it when… | Steps | Settings that apply |
+|---|---|---|---|
+| **Exporter-generated PDF** | You want a PDF using one of the exporter's two layouts. | Select **PDF**, choose **Reading** or **Print-friendly**, then choose **Save as PDF** in the browser preview. | The selected PDF profile applies. The HTML print checkboxes do not. |
+| **Print downloaded HTML** | You already have an `.html` export and want to print it or use its HTML-only print controls. | Open the `.html` file and press **Ctrl+P** (or **Cmd+P** on macOS). | The saved **Include Sources** and **Include shopping results** settings apply only to this route; they do not change the HTML screen view. |
 
-In Chrome, "Save as PDF" produces a **text-based PDF** — selectable text and clickable links. If your PDF editor can't select text, try opening the PDF in Firefox or Adobe Reader instead.
+### PDF profile comparison
+
+| Profile | Best for | Sources and shopping | Page style |
+|---|---|---|---|
+| **Reading** | On-screen reading | Keeps available cited Sources and captured shopping results. | Screen-scale type, light reader-style surfaces, and the HTML font stack where available. |
+| **Print-friendly** | Paper printing | Hides cited Sources and shopping results. | Smaller print-scale type, system fonts, and white fills. |
+
+Both PDF profiles open the sandboxed browser print preview. The PDF is a paginated document—not a screenshot of the HTML screen—with a printed Contents page in place of the sidebar. The downloaded HTML has its own embedded print stylesheet and requests 0.5in margins; the browser print dialog can override them.
+
+### Print tips
+
+- To request CSS accent backgrounds, enable **Background graphics** in the browser dialog where available. Browser settings can override CSS colors; Print-friendly intentionally uses white fills.
+- Font availability and metrics vary by browser, so line wrapping can change. Reading uses the HTML font stack where available; Print-friendly PDF and downloaded HTML use system fonts to reduce PDF text-mapping issues.
+- PDF text selection and appearance can vary with the browser and print settings. If your PDF editor cannot select text, try opening the file in Firefox or Adobe Reader.
 
 ---
 
@@ -136,64 +176,55 @@ In Chrome, "Save as PDF" produces a **text-based PDF** — selectable text and c
 
 The script uses a **passive dual-path capture**:
 
-### Path 1 — API interception (primary)
-Ask Brave fetches conversation data from `/api/tap/v1/stream` using a **newline-delimited JSON** format. The script wraps `window.fetch` at document-start and clones the response body via `ReadableStream.tee()`, parsing every event without disturbing the page. Events like `text_delta`, `inline_entity`, and `augment_with_inline_citation` are reduced into a per-turn structure that includes the answer text and all cited URLs.
+### Path 1 — Passive API capture
+Ask Brave fetches conversation data from `/api/tap/v1/stream` using a **newline-delimited JSON** format. The script wraps `window.fetch` at document-start and clones the response body via `ReadableStream.tee()`, parsing events without disturbing the page. The API store retains answer text and citation URLs, including earlier answer versions when Brave regenerates a response.
 
-### Path 2 — Clipboard-write capture (fallback)
-When API capture isn't available (older conversations opened mid-session, SPA edge cases), the script clicks each Copy button and captures the text from the page's own `clipboard.writeText` call — no clipboard reads, no Firefox activation issues.
+### Path 2 — Verify what is visible
+At export time, the script clicks each answer's Brave Copy button and compares the copied answer with captured API candidates for the same question. It uses captured answer text and attaches cited Sources only when the visible version is verified; ambiguous matches with conflicting citation sets fail closed. `Auto` keeps unmatched visible text without unverified Sources. `API only` stops if any visible answer cannot be verified. `Clipboard only` uses the copied text, while still allowing Sources for a verified match. No clipboard reads are used; the page's clipboard-write calls are observed instead.
+
+### Shopping results
+For shopping, the script passively observes matching Brave tool responses and associates them with their answer positions. It renders static product cards, applies the URL and nested-offer exclusions, and keeps them separate from formal Sources. It does not visit retailer pages; displayed prices are Brave-reported and may be cached.
 
 ### Hybrid output
-Questions always come from the DOM (Brave doesn't echo them back in the live stream). Answers come from the API when available. Sources always come from the API when captured, even when content came from clipboard.
+Questions come from the DOM. The answer version comes from what Brave currently shows; captured API text and Sources are used only when that exact answer (ignoring whitespace differences) can be matched. Answer verification uses Brave's Copy buttons, so clipboard contents may change and long conversations may take longer. This generic fallback is not a promise of support for unsupported managers.
 
-**Full technical details:** see [TECHNICAL.md](TECHNICAL.md) — endpoint reference, event grammar, DOM structure, and architecture notes for anyone forking or extending this script.
+**Full technical details:** see [TECHNICAL.md](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/blob/main/TECHNICAL.md).
 
 ---
 
 ## Known limitations
 
-- **Share URLs only.** The script exports conversations currently open in the browser. Bulk export from a share URL is on the roadmap.
-- **Chrome's "Background graphics" quirk.** In some Chrome versions, the PDF renderer decides between text-based and image-based output based on this checkbox and internal heuristics. The current script produces text-based PDFs in our tests, but browser updates can change this.
-- **Localized UI.** The copy-button fallback tries 13+ languages, but if yours isn't covered, please open an issue with the button label text.
+- **Current conversation only.** The script exports the conversation currently open in the browser.
+- **Greasemonkey is unsupported.** The project targets Tampermonkey and Violentmonkey, but only browser/manager/version combinations actually tested should be treated as verified.
+- **Browser print variation.** PDF rendering and background colors can vary with browser versions and print-dialog settings; the browser may override CSS color requests.
+- **Localized UI.** The copy-button fallback covers the 49 display-language entries in the supplied Brave list. If a new label is missing, open an issue with the exact button text.
+- **Standalone HTML is not sanitized.** Treat exported HTML as untrusted if its conversation content is untrusted. The sandboxed PDF preview's CSP does not protect downloaded HTML.
 - **Deep Research mode** exports correctly, but its specialized UI timeline isn't captured — only the final answer and sources.
 
 ---
 
 ## Changelog
 
-### v1.5.2 (current)
-- **Sources per answer** in both Markdown and HTML
-- **Font-size controls** (base / questions / answers / headings), persisted
-- **Sources-in-print toggle**, persisted
-- **Capture-method selector** (Auto / API / Clipboard)
-- **Three-dot table menu** (Copy for Excel / Copy as Text / Copy Markdown)
-- **Firefox clipboard fix** — taps write side instead of reading
-- **Localized copy-button detection** — 13+ language fallbacks
-- **Print CSS overhaul** — pagination, table shrink, orphan control, clean sources
-- **Question color and spacing fixes**
-- **NDJSON stream parser** — correct handling of Brave's actual response format
-- **Entity text injection** — `inline_entity` events appended to answers
+See [CHANGELOG.md](CHANGELOG.md) for the public release history:
 
-### v1.2 (2026-12)
-- Initial release
-- Markdown and HTML export via clipboard copy buttons
+- **v1.5.9** — visible-answer/source matching, combined export and PDF profiles, Safe Search, localized Copy labels, shopping results, and Markdown spacing improvements.
+- **v1.5.2** — per-answer Sources, capture-method and font controls, and print improvements.
+- **v1.2 (2025-12)** — initial Markdown and HTML export.
 
 ---
 
 ## Contributing
 
-Bug reports, pull requests or suggestions are welcome
+Bug reports, pull requests or suggestions are welcome.
 
 When reporting a bug, please include:
 - Browser name and version
-- Conversation share URL (if possible)
-- Console output (F12 → Console) — especially `window.__ABX` if it relates to capture issues
-- A screenshot if the issue is visual
+- Userscript manager and exact version (Tampermonkey / Violentmonkey are intended targets; Greasemonkey is unsupported)
+- Ask Brave URL only if the conversation and its URL are safe to share; otherwise omit it
+- A concise, redacted console error if relevant. Do **not** post `window.__ABX`, private prompts/answers, tokens, cookies, request headers, session data, or a private conversation URL
+- A screenshot if the issue is visual, after removing any private conversation content
 
-See [TECHNICAL.md](TECHNICAL.md) for architecture details before submitting code changes.
-
-## 🛑 Notes
-- When running the script, the browser may ask you if you want let the script use your clipboard or not. You should press **Allow** so that the script can copy user prompts ans Ai answers to clipboard.
-  - <img width="49%" alt="brave_tHOfxefFbvi" src="https://github.com/user-attachments/assets/163137af-ddb7-4545-bd02-10db670be13c" />
+See [TECHNICAL.md](https://github.com/abdo2048/Ask-Brave-Chat-Exporter/blob/main/TECHNICAL.md) for architecture details before submitting code changes.
 
 ## Roadmap
 
@@ -207,29 +238,32 @@ Status legend: ✅ **Done** · 🚧 **In progress** · 📋 **Planned** · ⏸�
 ### Phase 2
 
 - ✅ **PDF Export** — *Shipped in v1.5.2.*
-  Print-optimized stylesheet; hides sidebar and interactive UI, repeats table headers across pages, avoids orphan headings, keeps rows intact across page breaks. Save as PDF via the browser's built-in print dialog.
+  Print-optimized stylesheet; hides sidebar and interactive UI, repeats table headers across pages, avoids orphan headings, keeps rows intact across page breaks.
 
-- 📋 **Share URL Integration** — *Planned.*
-  Include the Brave Ask share URL in exports, either by scraping the current conversation or accepting a manually-entered URL in the export dialog. Will let recipients jump back to the original thread.
+- ✅ **Chat URL in exports** — *Included in v1.5.9.* The exported link preserves the full current URL, including query parameters and fragment.
 
 - 📋 **Editable HTML Metadata** — *Planned.*
-  Allow editing title and share URL directly in the exported HTML file (inline editing or a small header editor). Useful when a reader wants to re-share after editing.
+  Allow editing the title and Chat URL directly in the exported HTML file.
 
 ### Phase 3
 
 - ✅ **Resources Section** — *Shipped in v1.5.2.*
-  Every answer now includes a numbered **Sources** list in both Markdown and HTML. Extracted from Brave's `augment_with_inline_citation` events, deduplicated by URL. A **Sources in print** toggle in the export dialog controls whether sources appear in the printed/PDF output.
+  Every answer now includes a numbered **Sources** list in both Markdown and HTML.
+
+- ✅ **Brave shopping results in exports** — *Included in v1.5.9.* Static result cards stay at their answer positions in Markdown, HTML, and Reading PDF. Prices are source-reported and may be cached. The exporter applies the approved URL and nested-offer exclusions; it does not scrape retailers or click “View all.”
 
 - ✅ **Configurable Export Options** — *Partially shipped.*
-  Current options: three capture methods (Auto / API only / Clipboard only), font-size sliders (base / questions / answers / headings), sources-in-print toggle. All persisted across sessions.
-  Remaining: resources toggle (`none` / `cited` / `all`), title length, and a consolidated options panel.
+  Current options: three capture methods, font-size sliders, sources-in-print toggle. All persisted.
+  Remaining: resources toggle (`none` / `cited` / `all`), title length, consolidated options panel.
 
-- 📋 **Bulk Export** — *Planned.*
-  Export multiple conversations in a single operation. The relevant endpoints (`has_current_state`, `get_current_state?source=shared`) are mapped and would iterate over a list of saved conversation ids.
+- 📋 **Session-scoped bulk export** — *Planned.*
+  "Export every conversation whose state we captured this session."
 
-- ⏸️ **Standalone Converter** — *Deferred.*
-  A pre-built binary to convert any Markdown file to this HTML theme, offline.
-  **Why deferred:** Brave's API requests are HMAC-signed with per-conversation symmetric keys generated client-side. A standalone tool cannot mint those signatures, so it can only convert already-exported Markdown — not fetch conversations on its own. The userscript remains the only viable capture tool for live data. The offline Markdown → HTML converter is still achievable as a separate small project, but it belongs outside this userscript.
+- 📋 **Full sidebar bulk export** — *Planned, larger.*
+  Requires reverse-engineering the sidebar's own data source and signing chain.
+
+- ⏸️ **Markdown-to-HTML converter** — *A separate utility.*
+  Convert any Markdown file into a standalone HTML page using the Ask Brave Chat Exporter theme. The converter can only include information present in the Markdown file.
 
 ## Dependencies
 - **marked.js**: Markdown to HTML conversion
