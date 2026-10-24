@@ -3,11 +3,11 @@
 // @namespace    http://tampermonkey.net/
 // @updateURL    https://raw.githubusercontent.com/abdo2048/Ask-Brave-Chat-Exporter/main/Ask-Brave-Chat-Exporter.js
 // @downloadURL  https://raw.githubusercontent.com/abdo2048/Ask-Brave-Chat-Exporter/main/Ask-Brave-Chat-Exporter.js
-// @version      1.5.9
+// @version      1.5.10
 // @description  Export Ask Brave conversations to Markdown, HTML, and PDF with Sources, captured shopping results, and saved settings
 // @author       abdo2048
-// @match        https://search.brave.com/ask*
-// @match        https://safe.search.brave.com/ask*
+// @match        https://search.brave.com/*
+// @match        https://safe.search.brave.com/*
 // @require      https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js
 // @run-at       document-start
@@ -110,7 +110,7 @@
  * CONFIG
  * ========================================================================= */
 const CONFIG = {
-    SCRIPT_VERSION: '1.5.9',
+    SCRIPT_VERSION: '1.5.10',
     COPY_DELAY: 200,
     MAX_TITLE_LENGTH: 40,
     EXPORT_MODE: 'auto',

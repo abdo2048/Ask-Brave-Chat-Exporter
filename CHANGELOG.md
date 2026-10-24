@@ -2,6 +2,11 @@
 
 Public release history.
 
+## v1.5.10
+
+- **Search-to-Ask continuity.** Matches all paths on standard Brave Search and Safe Search so the userscript starts before in-page navigation from results into Ask. The Export button may appear on search-result pages before Ask opens; this is intentional.
+- **Update delivery.** Bumps the script version so userscript managers can offer this fix to existing installs.
+
 ## v1.5.9
 
 - **More reliable answer and source matching.** Exports the answer currently shown, including after regeneration; cited Sources are included only when the match is clear.

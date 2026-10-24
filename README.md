@@ -55,6 +55,7 @@ https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 - **Sources per answer** — every answer's citations appear as a numbered list in both Markdown and HTML
 - **Font-size controls** — 16px body/master with independent Questions, Answers, Headings, and shared inline/block Code sliders; code defaults to 0.78rem (12.48px); settings persist
 - **Shopping results** — includes matching, passively captured product results at their answer position in Markdown, HTML, and Reading PDF; product prices are Brave-reported and may be cached
+- **Search-to-Ask continuity** — the Export button is available on Brave Search and Safe Search pages and remains available when a search-results follow-up opens Ask without refreshing
 - **HTML print options** — saved Sources and shopping settings control Ctrl+P from downloaded HTML only; direct PDF profiles use their own rules
 
 ### Markdown output
@@ -79,7 +80,8 @@ https://github.com/user-attachments/assets/82a15cfe-143a-4831-b41d-70eed53e0b09
 - **Sources block** after each answer with favicons and clickable links
 
 ### Compatibility
-- **Testing:** I tested the final v1.5.9 script and all tests passed.
+- **Search-to-Ask testing:** Before the v1.5.10 metadata bump, I tested the flow on both standard Brave Search and Safe Search, including direct Ask, Back/Forward, an older sidebar conversation, and New Conversation. Answers and Sources matched where available, and no duplicate button appeared. The v1.5.10 change is version metadata; runtime code is otherwise unchanged.
+- **Offline regressions:** the 6-case shopping/diagnostics suite and 14-case answer/Sources suite pass; the final JavaScript artifacts pass syntax checks.
 - **Firefox-specific handling** — observes the page's clipboard-write calls instead of trying to read the clipboard without a user gesture.
 - **Localized copy-button detection** — recognizes the supplied Brave copy-button labels for 49 display-language entries (38 distinct fallback labels, including legacy aliases).
 
@@ -118,8 +120,8 @@ If the browser asks for clipboard access, choose **Allow** when you want to expo
 
 ### Use
 
-1. Visit [search.brave.com/ask](https://search.brave.com/ask) or [safe.search.brave.com/ask](https://safe.search.brave.com/ask) and open a conversation (or start a new one)
-2. Click the **💾 Export** button (bottom-right corner)
+1. Open an Ask conversation directly at [search.brave.com/ask](https://search.brave.com/ask) or [safe.search.brave.com/ask](https://safe.search.brave.com/ask), or start from either Brave Search page and use a search-result follow-up to enter Ask.
+2. Click the **💾 Export** button (bottom-right corner). It may already be visible on the search page; it remains available through the transition, so no refresh is needed.
 3. Choose formats, a PDF profile if needed, capture method, title, fonts, and print settings
 4. Click **Export selected formats**; if PDF is selected, use **Save as PDF** in the browser print dialog
 
@@ -174,6 +176,8 @@ Both PDF profiles open the sandboxed browser print preview. The PDF is a paginat
 
 ## How does it work?
 
+To remain active when Brave navigates from search results into Ask within the same document, the userscript matches pages on both Brave Search hosts. The Export button is therefore also visible on search pages.
+
 The script uses a **passive dual-path capture**:
 
 ### Path 1 — Passive API capture
@@ -207,7 +211,8 @@ Questions come from the DOM. The answer version comes from what Brave currently 
 
 See [CHANGELOG.md](CHANGELOG.md) for the public release history:
 
-- **v1.5.9** — visible-answer/source matching, combined export and PDF profiles, Safe Search, localized Copy labels, shopping results, and Markdown spacing improvements.
+- **v1.5.10** — Search-to-Ask continuity across standard and Safe Search, with a version bump so userscript managers can offer the update.
+- **v1.5.9** — visible-answer/source matching, combined export and PDF profiles, Safe Search, localized Copy labels, shopping results, and Markdown spacing.
 - **v1.5.2** — per-answer Sources, capture-method and font controls, and print improvements.
 - **v1.2 (2025-12)** — initial Markdown and HTML export.
 

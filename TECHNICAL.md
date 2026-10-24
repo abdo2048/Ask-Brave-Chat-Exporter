@@ -1,15 +1,15 @@
 # Ask Brave Chat Exporter — Technical Overview
 
-This note summarizes the behavior of the v1.5.9 userscript for users and contributors.
+This note summarizes the behavior of the v1.5.10 userscript for users and contributors.
 
 ## Where it runs
 
-The script runs at `document-start` on the standard Ask Brave and Safe Search conversation pages:
+The script runs at `document-start` on all pages of the two supported Brave Search hosts so it is active before Brave's same-document navigation from search results into Ask:
 
-- `https://search.brave.com/ask*`
-- `https://safe.search.brave.com/ask*`
+- `https://search.brave.com/*`
+- `https://safe.search.brave.com/*`
 
-It is a client-side userscript. It observes the conversation data Brave already requests in the open tab and uses Brave's own Copy controls when preparing an export. It does not submit additional conversation requests to a separate service.
+The Export button is also visible on search pages. The export uses the Ask conversation currently shown in the open tab. The userscript observes relevant data Brave already requests in that tab and uses Brave's own Copy controls when preparing an export. It does not submit additional conversation requests to a separate service.
 
 ## Capturing and matching conversation content
 
@@ -31,10 +31,11 @@ Theme, typography, and export preferences are saved locally. Marked is pinned to
 
 ## Privacy and safety notes
 
-- Conversation capture is limited to the page currently open; the script does not crawl other conversations.
+- The userscript runs across the two supported Brave Search hosts in the current tab so it can follow in-page navigation into Ask. It exports the Ask conversation currently shown and does not crawl other tabs.
+- Captured response data stays in the current page session; the script does not send it to a separate service.
 - Shopping data comes from Brave's existing page responses. Retailer pages are not contacted for price verification.
 - Standalone downloaded HTML is **not sanitized**. Treat it as untrusted when the conversation content is untrusted. The sandboxed PDF preview's Content Security Policy does not protect a separately downloaded HTML file.
-- Greasemonkey is unsupported. Tampermonkey and Violentmonkey are supported targets. I tested the final v1.5.9 script and all tests passed.
+- Greasemonkey is unsupported. Tampermonkey and Violentmonkey are supported targets. Before the v1.5.10 metadata bump, I tested the Search-to-Ask flow on both supported hosts; the v1.5.10 change is version metadata and the runtime code is otherwise unchanged. The offline regression suites pass.
 - PDF appearance, text selection, and print colors can vary with browser versions and print-dialog settings.
 
 ## Declared script dependencies
