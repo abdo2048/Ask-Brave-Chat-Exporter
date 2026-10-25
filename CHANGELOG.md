@@ -2,6 +2,14 @@
 
 Public release history.
 
+## v1.5.11
+
+- **Preserve raw question text.** Keep meaningful newlines, tabs, and indentation in exported questions. Remove Brave's expand/collapse controls structurally from a clone so user-written phrases such as “Show more” are retained.
+- **PDF preview reliability.** Clear the preview load timer after the preview document is validated and before font readiness / browser printing, avoiding a stale load-timeout warning during a long print-dialog wait.
+- **Reading PDF table pagination.** Keep compact heading/table groups with 1–8 body rows together when they fit; larger and oversized tables remain fragmentable with repeated headers.
+- **Reading Contents inset.** Add a restrained top/side gutter to the printed Contents title and question rows. Print-friendly and downloaded-HTML print styles remain unchanged.
+- **Update delivery.** Bump the script version so userscript managers can offer v1.5.11 to existing installs.
+
 ## v1.5.10
 
 - **Search-to-Ask continuity.** Matches all paths on standard Brave Search and Safe Search so the userscript starts before in-page navigation from results into Ask. The Export button may appear on search-result pages before Ask opens; this is intentional.

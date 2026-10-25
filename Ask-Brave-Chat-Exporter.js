@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @updateURL    https://raw.githubusercontent.com/abdo2048/Ask-Brave-Chat-Exporter/main/Ask-Brave-Chat-Exporter.js
 // @downloadURL  https://raw.githubusercontent.com/abdo2048/Ask-Brave-Chat-Exporter/main/Ask-Brave-Chat-Exporter.js
-// @version      1.5.10
+// @version      1.5.11
 // @description  Export Ask Brave conversations to Markdown, HTML, and PDF with Sources, captured shopping results, and saved settings
 // @author       abdo2048
 // @match        https://search.brave.com/*
@@ -110,7 +110,7 @@
  * CONFIG
  * ========================================================================= */
 const CONFIG = {
-    SCRIPT_VERSION: '1.5.10',
+    SCRIPT_VERSION: '1.5.11',
     COPY_DELAY: 200,
     MAX_TITLE_LENGTH: 40,
     EXPORT_MODE: 'auto',
@@ -218,7 +218,7 @@ let __ABX_LAST_EXPORT_DIAGNOSTICS = null;
 /* --- Conversation selection --- */
 function abxRelevantConversations() {
     const convs = __ABX.convs;
-    const first = extractDomQuestions()[0] || '';
+    const first = abxNormQuestion(extractDomQuestions()[0] || '');
     const id = new URLSearchParams(location.search).get('conversation');
     return Object.entries(convs).filter(([key, conv]) => {
         if (!conv || !Array.isArray(conv.turns) || key === '__unknown__') return false;
@@ -302,8 +302,8 @@ function abxQuestionMismatch(apiQ, domQ) {
 function abxLiveCtx() {
     var bubbles = document.querySelectorAll('.message.user .user-bubble');
     var n = bubbles.length;
-    var first = n ? abxNormQuestion(bubbles[0].textContent) : '';
-    var last = n ? abxNormQuestion(bubbles[n - 1].textContent) : '';
+    var first = n ? abxNormQuestion(abxReadQuestionText(bubbles[0])) : '';
+    var last = n ? abxNormQuestion(abxReadQuestionText(bubbles[n - 1])) : '';
     return {
         convId: first ? 'live:' + first : '__unknown__',
         index: n ? n - 1 : 0,
@@ -1098,14 +1098,31 @@ function getCurrentConversationId() {
     } catch (e) { return null; }
 }
 
+function abxReadQuestionText(bubble) {
+    if (!bubble) return '';
+    // Work on a clone: never expand, collapse, or edit Brave's live interface.
+    const clone = bubble.cloneNode(true);
+    clone.querySelectorAll('button, [role="button"], [role="toolbar"]').forEach(el => el.remove());
+    const content = clone.querySelector('.user-bubble-text') || clone;
+    const blocks = new Set(['DIV', 'P', 'PRE', 'BLOCKQUOTE', 'LI']);
+    let out = '';
+    function visit(node) {
+        if (node.nodeType === 3) { out += node.nodeValue || ''; return; }
+        if (node.nodeType !== 1) return;
+        if (node.tagName === 'BR') { out += '\n'; return; }
+        const block = blocks.has(node.tagName);
+        if (block && out && !out.endsWith('\n')) out += '\n';
+        Array.from(node.childNodes).forEach(visit);
+        if (block && node !== content && out && !out.endsWith('\n')) out += '\n';
+    }
+    visit(content);
+    return out.replace(/\r\n?/g, '\n');
+}
+
 function extractDomQuestions() {
     return Array.from(document.querySelectorAll('.message.user .user-bubble'))
-        // abxNormQuestion strips Brave's "Show more" affordance. It is a UI
-        // control, not part of the question. Truncation itself is only
-        // visual (.user-bubble-text is line-clamped), so textContent already
-        // holds the full question.
-        .map(function (e) { return abxNormQuestion(e.textContent); })
-        .filter(function (t) { return t; });
+        .map(abxReadQuestionText)
+        .filter(text => text.trim().length > 0);
 }
 function extractDomAnswers() {
     return Array.from(document.querySelectorAll('.tap-round'))
@@ -1166,15 +1183,10 @@ function abxAppendToDoc(node, preferHead) {
     document.addEventListener('DOMContentLoaded', function () { retry(); }, { once: true });
 }
 
-/* The ONE question normaliser. extractDomQuestions() used to strip Brave's
-   "Show more" affordance while abxRelevantConversations() did not, so the two
-   disagreed and the exact-equality match against the API question failed —
-   silently discarding captured answers. */
+/* Matching key only. Keep this lossy normalizer at identity/comparison
+   boundaries; exported question content comes from abxReadQuestionText(). */
 function abxNormQuestion(v) {
-    return String(v == null ? '' : v)
-        .replace(/\s+Show more\s*$/i, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+    return String(v == null ? '' : v).replace(/\s+/g, ' ').trim();
 }
 
 /* Rendered inline HTML -> plain text. Must run BEFORE entity decoding so a
@@ -1857,6 +1869,10 @@ function printHTMLInPopup(printWindow, html) {
                     finish(new Error('The PDF preview could not load its isolated print document.'));
                     return;
                 }
+                if (timeoutId !== null) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
                 frame.style.visibility = 'visible';
                 const status = printWindow.document.getElementById('abx-print-status');
                 const closeButton = printWindow.document.getElementById('abx-print-close');
@@ -2511,6 +2527,13 @@ function buildPrintCSS(userFs, pdfMode) {
     const tableHeadText = paper ? '#0f172a' : '#1e1b4b';
     const tableHeadRule = paper ? '#0f172a' : '#475569';
     const codeBorder = '1px solid #cbd5e1';
+    const shortTableGroupRule = reading ? `
+  /* Reading-only: keep a compact heading+table together when it can fit;
+     oversized groups and long tables remain fragmentable. */
+  .table-heading-group--short-table {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+  }` : '';
     return `
 <style id="print-rules">
 @page { margin: 0.5in; }
@@ -2680,6 +2703,7 @@ function buildPrintCSS(userFs, pdfMode) {
   .table-heading-group > :is(h1,h2,h3,h4) { break-after: avoid-page; page-break-after: avoid; }
   .table-heading-group > :is(h1,h2,h3,h4) + :is(table,.table-outer) { break-before: avoid-page; page-break-before: avoid; }
   .table-heading-group > .table-outer { margin: 0 !important; break-inside: auto !important; page-break-inside: auto !important; }
+  ${shortTableGroupRule}
 
   /* Question labels and the left rule remain clear even when backgrounds are off. */
   .question {
@@ -2812,6 +2836,10 @@ function buildPrintCSS(userFs, pdfMode) {
     font-feature-settings: "liga" 0, "clig" 0, "dlig" 0 !important;
   }
   html, body { background: #f8fafc !important; }
+  /* The print-only Contents nav is outside .main-content; restore the Reading outer gutter. */
+  .printed-contents {
+    padding: 1.25rem 1.4rem 0.45rem !important;
+  }
   body { line-height: 1.7 !important; }
   .main-content { padding: 1.25rem 1.4rem !important; max-width: 100% !important; }
   .header {
@@ -2985,8 +3013,14 @@ function wrapHeadingTablePairs(html) {
         const spacing = tail.match(/^\s*/)[0];
         const table = tail.slice(spacing.length).match(/^<table\b[\s\S]*?<\/table>/i);
         if (table) {
+            const tbodyGroups = table[0].match(/<tbody[^>]*>[\s\S]*?<\/tbody>/gi) || [];
+            const bodyRowCount = tbodyGroups.reduce((total, tbody) =>
+                total + (tbody.match(/<tr\b/gi) || []).length, 0);
+            const shortTableClass = bodyRowCount > 0 && bodyRowCount <= 8
+                ? ' table-heading-group--short-table'
+                : '';
             const end = afterHeading + spacing.length + table[0].length;
-            output += '<div class="table-heading-group">' + source.slice(match.index, end) + '</div>';
+            output += '<div class="table-heading-group' + shortTableClass + '">' + source.slice(match.index, end) + '</div>';
             cursor = end;
             headingRe.lastIndex = end;
         } else {
