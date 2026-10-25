@@ -23,13 +23,6 @@
 
 ## Features
 
-### New in v1.5.11
-
-- **Preserves question text.** Keeps meaningful line breaks, tabs, indentation, and user-written phrases such as “Show more”; Brave’s expand/collapse controls are removed structurally from a clone rather than by deleting matching words.
-- **PDF preview reliability.** Once the preview document is validated, its load timer is cleared before font readiness and the browser print call, avoiding a stale load-timeout warning during a long print-dialog wait.
-- **Reading PDF pagination.** Compact heading/table groups with 1–8 body rows are kept together when they fit; larger or oversized tables can still continue across pages with repeated headers.
-- **Reading Contents inset.** The printed Contents title and question rows now have a top/side gutter matching the Reading content. Print-friendly and standalone-HTML print styles are unchanged.
-
 ### Core
 
 - **Multi-format export** — select Markdown (`.md`), HTML (`.html`), PDF, or combine them in one export action.
@@ -65,9 +58,9 @@
 
 ### Compatibility and testing
 
-- **Search-to-Ask testing:** Before the v1.5.10 metadata bump, the owner tested standard Brave Search and Safe Search, including direct Ask, Back/Forward, an older sidebar conversation, and New Conversation. Answers and Sources matched where available, with no duplicate button. This is owner-reported prior-build testing, not a claim of an exhaustive browser/userscript-manager matrix.
+- **Search-to-Ask testing:** Before the v1.5.10 metadata bump, I tested standard Brave Search and Safe Search domains, including direct Ask, Back/Forward, an older sidebar conversation, and New Conversation. Answers and Sources matched where available, with no duplicate button.
 - **Automated v1.5.11 regressions:** 11/11 question-text/Markdown checks, 15/15 answer/Sources checks, and 6/6 shopping/diagnostics checks pass. Copy-label/version metadata and JavaScript syntax checks pass; the PDF-preview timeout lifecycle has a mocked regression.
-- **PDF layout checks:** Reading table pagination and Contents-padding tests pass in headless Firefox 153.5.0 ESR with A4/0.5in/background-on settings. The tests cover repeated headers and long-table continuation as well as the Reading-only Contents inset. Headless/offline checks do not certify every browser's native print dialog or userscript-manager combination. The owner separately reports that the requested native Reading-PDF check passed in Firefox 150.0.3/Tampermonkey 5.5.0; this is one reported configuration, not an exhaustive matrix.
+- **PDF layout checks:** Reading table pagination and Contents-padding tests pass in headless Firefox 153.5.0 ESR with A4/0.5in/background-on settings. The tests cover repeated headers and long-table continuation as well as the Reading-only Contents inset. Headless/offline checks do not certify every browser's native print dialog or userscript-manager combination. I tested the native Reading-PDF check passed in Firefox 150.0.3/Tampermonkey 5.5.0; this is one reported configuration, not an exhaustive matrix.
 - **Firefox clipboard handling** — observes the page's clipboard-write calls instead of trying to read the clipboard without a user gesture.
 - **Localized Copy-button detection** — recognizes the supplied Brave labels for 49 display-language entries (38 distinct fallback labels, including legacy aliases).
 
